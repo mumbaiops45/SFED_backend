@@ -1,34 +1,15 @@
 const { Product } = require('../models')
 const { nextId } = require('../utils/genId')
 
-// Keep the FAQ array well-formed: drop rows where both question and answer
-// are blank, trim whitespace, cap the field so a malformed payload can't
-// balloon the document.
-function sanitizeFaqs(input) {
-  if (!Array.isArray(input)) return []
-  return input
-    .map((row) => ({
-      q: String(row?.q ?? '').trim(),
-      a: String(row?.a ?? '').trim(),
-    }))
-    .filter((row) => row.q || row.a)
-    .slice(0, 30)
-}
-
-// Normalise gallery entries. Accepts either `[{url, color}]` (new shape)
-// or `["url", ...]` (legacy) and returns the canonical object form. Drops
+// Normalise gallery entries. Accepts either `[{url}]` (new shape) or
+// `["url", ...]` (legacy) and returns the canonical object form. Drops
 // blanks / placeholder emoji and caps at 12 to keep documents reasonable.
 function sanitizeImages(input) {
   if (!Array.isArray(input)) return []
   return input
     .map((entry) => {
-      if (typeof entry === 'string') {
-        return { url: entry.trim(), color: '' }
-      }
-      return {
-        url: String(entry?.url ?? '').trim(),
-        color: String(entry?.color ?? '').trim(),
-      }
+      if (typeof entry === 'string') return { url: entry.trim() }
+      return { url: String(entry?.url ?? '').trim() }
     })
     .filter((e) => e.url && e.url !== '🥻')
     .slice(0, 12)
@@ -47,12 +28,20 @@ exports.getOne = async (req, res) => {
 exports.create = async (req, res) => {
   const d = req.body
   const stock = Number(d.stock) || 0
+  const name = String(d.name || '').trim()
+  const slug = String(d.slug || '').trim().toLowerCase().replace(/\s+/g, '-') || name.toLowerCase().replace(/\s+/g, '-')
+  if (slug) {
+    const exists = await Product.findOne({ slug })
+    if (exists) return res.status(409).json({ message: 'Product slug already exists' })
+  }
   // Gallery source of truth: prefer the images array; fall back to the
   // legacy single `image` field if that's all the client sent.
   const images = sanitizeImages(d.images?.length ? d.images : d.image ? [d.image] : [])
   const product = await Product.create({
     ...d,
     id: await nextId(Product, 'SAR-'),
+    slug,
+    categorySlug: d.categorySlug || d.category || '',
     price: Number(d.price) || 0,
     mrp: Number(d.mrp) || 0,
     stock,
@@ -61,7 +50,6 @@ exports.create = async (req, res) => {
     images,
     image: images[0]?.url || '🥻',
     status: stock > 0 ? d.status || 'active' : 'out_of_stock',
-    faqs: sanitizeFaqs(d.faqs),
   })
   res.status(201).json(product)
 }
@@ -79,10 +67,14 @@ exports.bulkCreate = async (req, res) => {
   const toAdd = items.map((d) => {
     max += 1
     const stock = Number(d.stock) || 0
+    const name = String(d.name).trim()
+    const slug = String(d.slug || '').trim().toLowerCase().replace(/\s+/g, '-') || `${name.toLowerCase().replace(/\s+/g, '-')}-${max}`
     return {
       ...d,
       id: `SAR-${max}`,
-      name: String(d.name).trim(),
+      slug,
+      name,
+      categorySlug: d.categorySlug || d.category || '',
       price: Number(d.price) || 0,
       mrp: Number(d.mrp) || 0,
       stock,
@@ -104,7 +96,6 @@ exports.update = async (req, res) => {
     d.stock = Number(d.stock)
     if (d.stock === 0) d.status = 'out_of_stock'
   }
-  if (d.faqs !== undefined) d.faqs = sanitizeFaqs(d.faqs)
   if (d.images !== undefined) {
     d.images = sanitizeImages(d.images)
     // Keep the legacy single hero pointing at the gallery's first slot so

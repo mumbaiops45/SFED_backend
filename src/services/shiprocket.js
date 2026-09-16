@@ -6,7 +6,7 @@ const axios = require('axios')
 // deprecates v1.
 const BASE = 'https://apiv2.shiprocket.in/v1/external'
 
-// Package defaults for a folded saree box. Weights are kg, dimensions
+// Package defaults for a folded SFED box. Weights are kg, dimensions
 // are cm — matching Shiprocket's API expectations.
 const DEFAULTS = {
   weightKg: 0.5,
@@ -86,8 +86,8 @@ function buildPayload(order) {
     billing_phone: phoneDigits,
     shipping_is_billing: true,
     order_items: items.map((it) => ({
-      name: it.name || 'Saree',
-      sku: it.sku || it.productId || 'SAREE',
+      name: it.name || 'SFED',
+      sku: it.sku || it.productId || 'SFED',
       units: Number(it.qty) || 1,
       selling_price: Number(it.unitPrice) || 0,
     })),

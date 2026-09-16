@@ -18,11 +18,9 @@ const Product = mongoose.model(
   new mongoose.Schema(
     {
       id: { type: String, unique: true, index: true },
+      slug: { type: String, unique: true, index: true },
       name: String,
-      category: String,
-      occasion: String,
-      fabric: String,
-      color: String,
+      // categorySlug: String,
       description: String,
       price: Number,
       mrp: Number,
@@ -30,51 +28,12 @@ const Product = mongoose.model(
       sold: { type: Number, default: 0 },
       rating: { type: Number, default: 0 },
       status: String,
-      // Stock/availability ribbons shown on the storefront card.
-      // Allowed values: 'ready' | 'fast' | 'last'. Admin can override the
-      // auto-derived-from-stock defaults by picking specific ones here.
-      badges: { type: [String], default: [] },
-      // Homepage / nav curation flags. Allowed values:
-      //   'bestseller' — appears in the Bestsellers rail
-      //   'new_in'    — appears under Featured > "New In"
-      //   'sale'      — appears in the nav "Sale" and shop "On sale" filter
-      flags: { type: [String], default: [] },
       // `image` remains the single hero used everywhere legacy code reads
-      // one image. `images` is the full gallery: each entry pairs an image
-      // URL / data URL with a color label so the storefront can group
-      // variants by colorway. The controller keeps `image` synced to
-      // `images[0].url`.
+      // one image. `images` is the full gallery. The controller keeps
+      // `image` synced to `images[0].url`.
       image: String,
       images: {
-        type: [{ url: String, color: String, _id: false }],
-        default: [],
-      },
-
-      // Product Details section on the storefront accordion
-      styleNo: String,
-      designNo: String,
-      weave: String,
-      region: String,
-      length: String,
-      blouse: String,
-      zari: String,
-      weight: String,
-      packContains: String,
-      manufactured: String,
-
-      // Product Speciality (long-form paragraph)
-      story: String,
-
-      // Style & Fit Tips (two separate paragraphs)
-      styleTips: String,
-      fitTips: String,
-
-      // Shipping & Returns copy — free-form, newline-separated paragraphs
-      shippingReturns: String,
-
-      // FAQs — per-product question/answer list
-      faqs: {
-        type: [{ q: String, a: String, _id: false }],
+        type: [{ url: String, _id: false }],
         default: [],
       },
     },
@@ -106,8 +65,12 @@ const Category = mongoose.model(
   new mongoose.Schema(
     {
       id: { type: String, unique: true, index: true },
+      slug: { type: String, unique: true, index: true },
       name: String,
-      color: { type: String, default: 'maroon' },
+      blurb: String,
+      image: String,
+      sortOrder: { type: Number, default: 0 },
+      active: { type: Boolean, default: true },
     },
     opts
   )
