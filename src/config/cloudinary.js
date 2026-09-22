@@ -1,20 +1,17 @@
-// Cloudinary SDK — configured once at boot from server-side env vars.
-// The api_secret must never leave the backend; the admin panel talks to
-// our /api/upload route which uses this SDK internally.
-const cloudinary = require('cloudinary').v2
+import { v2 as cloudinary } from "cloudinary";
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true,
-})
+let configured = false;
 
-const isConfigured = () =>
-  Boolean(
-    process.env.CLOUDINARY_CLOUD_NAME &&
-    process.env.CLOUDINARY_API_KEY &&
-    process.env.CLOUDINARY_API_SECRET,
-  )
+export const getCloudinary = () => {
+    if (!configured) {
+        cloudinary.config({
+            cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+            api_key: process.env.CLOUDINARY_API_KEY,
+            api_secret: process.env.CLOUDINARY_API_SECRET
+        });
+        configured = true;
+    }
+    return cloudinary
+}
 
-module.exports = { cloudinary, isConfigured }
+export default cloudinary
