@@ -23,6 +23,7 @@ export const protect = async (req, res, next) => {
                 throw new Error("user not found");
             }
             req.user = {
+                _id:admin._id,
                 name: admin.name,
                 role: admin.role,
                 email: admin.email

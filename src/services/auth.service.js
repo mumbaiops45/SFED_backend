@@ -34,7 +34,7 @@ export const loginService=async ({email,password}) => {
     if (!email || !password) {
         throw new Error("email and password is required to login");
     }
-    const exist = await User.findOne({email:email}).select("_id role isBlock +password");
+    const exist = await User.findOne({email:email}).select("_id name role isBlock +password");
     if (!exist) {
         throw new Error("this email is not registered");
         
@@ -54,7 +54,10 @@ const token = genrateJwtToken({
 return{
     message:"login successfull",
     data:{
-        token
+        token,
+          user: {
+                name: exist.name,
+            }
     }
 }
 }

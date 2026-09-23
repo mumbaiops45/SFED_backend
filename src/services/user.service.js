@@ -1,5 +1,17 @@
 import User from "../models/user.model.js";
 
+
+export const getUserService=async () => {
+    const user = await User.find({role:"user"});
+      return {
+        message: "Users fetched successfully",
+        data: {
+            user
+        }
+    };
+}
+
+
 export const updateUserService = async (id, data) => {
 
     if (data.password) {
