@@ -9,6 +9,9 @@ import CategoryRouter from "./routes/category.route.js";
 import ProductRouter from "./routes/product.route.js";
 import ProductMediaRouter from "./routes/productMedia.route.js";
 import CartRouter from "./routes/cart.route.js";
+import AddressRouter from "./routes/address.route.js";
+import OrderRouter from "./routes/order.route.js";
+
 
 
 
@@ -32,6 +35,9 @@ app.use("/api/category",CategoryRouter);
 app.use("/api/product",ProductRouter);
 app.use("/api/productMedia",ProductMediaRouter);
 app.use("/api/cart",CartRouter);
+app.use("/api/address",AddressRouter);
+app.use("/api/order",OrderRouter);
+
 
 
 app.use(errorHandler);

@@ -20,6 +20,7 @@ export const getCategoryService=async () => {
         }
     }
 }
+
 export const updateCategoryService=async (id,data) => {
 
     const oldCategory=await Category.findById(id)
