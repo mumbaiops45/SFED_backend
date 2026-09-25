@@ -89,27 +89,42 @@ export const creatOrderService = async (userId, AddressId) => {
 
 }
 
-export const getOrderService = async (userId, { page = 1, limit = 10, status, paymentStatus }) => {
+export const getOrderService = async (
+    userId,
+    role,
+    { page = 1, limit = 10, status, paymentStatus }
+) => {
     page = Number(page);
     limit = Number(limit);
+
     const skip = (page - 1) * limit;
-    const filter = { user: userId };
-    if (status) {
-        filter.status = status
-    };
-    if (paymentStatus) {
-        filter.paymentStatus = paymentStatus
+
+    const filter = {};
+
+    if (role === "user") {
+        filter.user = userId;
     }
 
-    const order = await Order.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit);
+    if (status) {
+        filter.status = status;
+    }
+
+    if (paymentStatus) {
+        filter.paymentStatus = paymentStatus;
+    }
+
+    const orders = await Order.find(filter)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
 
     return {
-        message: "Orders fetch successfully",
+        message: "Orders fetched successfully",
         data: {
-            order
+            orders
         }
-    }
-}
+    };
+};
 
 export const updateOrderByCustomerService = async (orderId, status = "CANCELLED") => {
     const order = await Order.findById(orderId);

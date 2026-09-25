@@ -1,6 +1,14 @@
 import Cart from "../models/cart.model.js";
+import Product from "../models/product.model.js";
 
 export const createCartService = async (userId, productId) => {
+    const product = await Product.findById(productId);
+    if (!product) {
+        throw new Error("product not  found");
+    }
+    if (product.stock === 0) {
+        throw new Error("this product is out of stock");
+    }
     const cart = await Cart.findOne({ user: userId });
     if (!cart) {
         const cart = await Cart.create({
@@ -21,6 +29,9 @@ export const createCartService = async (userId, productId) => {
     } else {
         const item = cart.items.find(item => item.product.toString() === productId);
         if (item) {
+            if (item.quantity >= product.stock) {
+                throw new Error("not enough stock available");
+            }
             item.quantity += 1;
         } else {
             cart.items.push({
@@ -115,14 +126,14 @@ export const deleteCartByproductIdSeervice = async (userId, productId) => {
         user: userId,
     },
         {
-            $pull:{
-                items:{
-                    product:productId
+            $pull: {
+                items: {
+                    product: productId
                 }
             }
         },
         {
-            new:true
+            new: true
         }
     )
     return {
@@ -134,14 +145,14 @@ export const deleteCartByproductIdSeervice = async (userId, productId) => {
 
 }
 
-export const clearCartService =async (userId) => {
-    const cart = await Cart.findOneAndDelete({user:userId});
+export const clearCartService = async (userId) => {
+    const cart = await Cart.findOneAndDelete({ user: userId });
     if (!cart) {
         throw new Error("cart not found");
     }
-    return{
-        message:"user cart clear",
-        data:{
+    return {
+        message: "user cart clear",
+        data: {
             cart
         }
     }

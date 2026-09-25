@@ -13,18 +13,26 @@ export const createOrdercontroller= async (req,res) => {
     })
     
 }
-export const getOrdercontroller= async (req,res) => {
-const {page,limit,status,paymentStatus}=req.query;
+export const getOrdercontroller = async (req, res) => {
+    const { page, limit, status, paymentStatus } = req.query;
 
-    const {message,data}= await getOrderService(req.user._id,{page,limit,status,paymentStatus});
+    const { message, data } = await getOrderService(
+        req.user._id,
+        req.user.role,
+        {
+            page,
+            limit,
+            status,
+            paymentStatus
+        }
+    );
 
     res.json({
-        success:true,
+        success: true,
         message,
         data
-    })
-    
-}
+    });
+};
 
 export const updateOrderByCustomerController = async (req, res) => {
     const { orderId } = req.params;

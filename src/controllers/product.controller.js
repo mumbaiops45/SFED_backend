@@ -10,8 +10,8 @@ export const createProductController =async (req,res) => {
 }
 
 export const getProductController =async (req,res) => {
-    const{category,page,limit,price}= req.query;
-    const{message,data}=await getProductService({category,page,limit,price});
+    const{keyword,category,page,limit,price}= req.query;
+    const{message,data}=await getProductService({keyword,category,page,limit,price});
     res.json({
         success:true,
         message,

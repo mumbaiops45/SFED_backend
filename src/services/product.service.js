@@ -16,12 +16,17 @@ export const createProductService = async (data) => {
     }
 }
 
-export const getProductService = async ({ category, page = 1, limit = 10, price }) => {
+export const getProductService = async ({ keyword,category, page = 1, limit = 10, price }) => {
     page = Number(page);
     limit = Number(limit);
     price = Number(price);
     const filter = {};
-
+    if (keyword) {
+        filter.name={
+            $regex:keyword,
+            $options:"i"
+        }
+    }
     if (category) {
         filter.category = category
     }

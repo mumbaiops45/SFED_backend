@@ -1,6 +1,8 @@
 import razorpay from "../config/razorpay.js";
 import Order from "../models/order.model.js";
+import Product from "../models/product.model.js";
 import crypto from "crypto";
+
 
 export const createUserPaymentService = async (orderId) => {
     const order = await Order.findById(orderId);
@@ -19,6 +21,20 @@ export const createUserPaymentService = async (orderId) => {
 
     if (!order.total || order.total <= 0) {
         throw new Error("Invalid order amount");
+    }
+
+    for (const item of order.items) {
+        const product = await Product.findById(item.product);
+
+        if (!product) {
+            throw new Error("Product not found");
+        }
+
+        if (product.stock < item.quantity) {
+            throw new Error(
+                `${product.name} does not have enough stock`
+            );
+        }
     }
 
     const razorpayOrder = await razorpay.orders.create({
@@ -71,8 +87,30 @@ export const verifyUserPaymentService = async ({
         throw new Error("Invalid payment signature");
     }
 
+    for (const item of order.items) {
+        const product = await Product.findOneAndUpdate(
+            {
+                _id: item.product,
+                stock: { $gte: item.quantity }
+            },
+            {
+                $inc: {
+                    stock: -item.quantity
+                }
+            },
+            {
+                new: true
+            }
+        );
+
+        if (!product) {
+            throw new Error("Not enough stock available");
+        }
+    }
+
     order.paymentStatus = "PAID";
     order.status = "CONFIRMED";
+
 
     await order.save();
 

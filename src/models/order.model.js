@@ -114,11 +114,12 @@ const orderSchema = new mongoose.Schema({
         default: "PENDING_PAYMENT"
     },
 
- paymentStatus: {
+paymentStatus: {
     type: String,
     enum: [
         "UNPAID",
         "PAID",
+        "FAILED",
         "REFUNDED"
     ],
     default: "UNPAID"
