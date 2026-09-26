@@ -2,6 +2,7 @@ import Order from "../models/order.model.js";
 import Cart from "../models/cart.model.js";
 import Product from "../models/product.model.js";
 import Address from "../models/address.model.js";
+import Shipping from "../models/shipping.model.js";
 
 export const creatOrderService = async (userId, AddressId) => {
     const cart = await Cart.findOne({ user: userId });
@@ -61,7 +62,24 @@ export const creatOrderService = async (userId, AddressId) => {
         return sum + item.price * item.quantity
     }, 0)
 
-    const shippingFee = 60;
+    const shipping= await Shipping.findOne({
+        minOrderValue:{
+            $lte:subtotal
+        },
+        $or:[{
+            maxOrderValue:{
+                $gte:subtotal
+            }
+        },{
+            maxOrderValue:{
+           $exists:false
+            }
+        }
+    ]
+    })
+
+
+    const shippingFee = shipping.shippingFee;
 
     const total = subtotal + shippingFee;
 

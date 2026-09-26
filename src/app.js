@@ -12,6 +12,8 @@ import CartRouter from "./routes/cart.route.js";
 import AddressRouter from "./routes/address.route.js";
 import OrderRouter from "./routes/order.route.js";
 import PaymentRouter from "./routes/payment.routes.js";
+import ShippingRouter from "./routes/shipping.route.js";
+
 
 
 
@@ -38,7 +40,7 @@ app.use("/api/cart",CartRouter);
 app.use("/api/address",AddressRouter);
 app.use("/api/order",OrderRouter);
 app.use("/api/payment",PaymentRouter);
-
+app.use("/api/shipping",ShippingRouter);
 
 
 app.use(errorHandler);

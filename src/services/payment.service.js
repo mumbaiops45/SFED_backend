@@ -76,8 +76,8 @@ export const verifyUserPaymentService = async ({
 
     if (order.status !== "PENDING_PAYMENT") {
         throw new Error("Order is not available for payment");
-    }
-
+    };
+    
     const generatedSignature = crypto
         .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
         .update(`${razorpay_order_id}|${razorpay_payment_id}`)
