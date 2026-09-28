@@ -8,8 +8,8 @@ import asyncHandler from "../middleware/asyncHandler.js";
 const router = express.Router();
 
 router.post("/",protect,authorize("admin"),BannerUpload.single("image"),asyncHandler(createBannerController))
-router.get("/",protect,authorize("user","admin"),asyncHandler(getBannerController))
-router.get("/:id",protect,authorize("user","admin"),asyncHandler(getBannerByIdController))
+router.get("/",asyncHandler(getBannerController))
+router.get("/:id",asyncHandler(getBannerByIdController))
 router.put("/:id",protect,authorize("admin"),BannerUpload.single("image"),asyncHandler(updateBannerByIdController))
 router.delete("/:id",protect,authorize("admin"),asyncHandler(deleteBannerByIdController))
 
