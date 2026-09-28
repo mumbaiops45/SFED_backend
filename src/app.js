@@ -13,7 +13,8 @@ import AddressRouter from "./routes/address.route.js";
 import OrderRouter from "./routes/order.route.js";
 import PaymentRouter from "./routes/payment.routes.js";
 import ShippingRouter from "./routes/shipping.route.js";
-
+import DashboardRouter from "./routes/dashbord.route.js";
+import BannerRouter from "./routes/banner.route.js";
 
 
 
@@ -41,7 +42,8 @@ app.use("/api/address",AddressRouter);
 app.use("/api/order",OrderRouter);
 app.use("/api/payment",PaymentRouter);
 app.use("/api/shipping",ShippingRouter);
-
+app.use("/api/dashboard",DashboardRouter);
+app.use("/api/Banner",BannerRouter);
 
 app.use(errorHandler);
 

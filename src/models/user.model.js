@@ -26,10 +26,14 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        select:false
+        select: false
 
     },
     image: {
+        type: String,
+        default: ""
+    },
+    imagePublicId: {
         type: String,
         default: ""
     },

@@ -1,5 +1,7 @@
 import User from "../models/user.model.js";
+import cloudinary from "../config/cloudinary.js";
 
+// admin
 
 export const getUserService=async () => {
     const user = await User.find({role:"user"});
@@ -32,4 +34,40 @@ export const updateUserService = async (id, data) => {
         }
     }
 
+}
+
+
+// user access
+
+export const updateUserByUserService = async (userId,{name,phone,image}) => {
+
+  const exist = await User.findById(userId);
+  if (!exist) {
+    throw new Error("user not found");
+  };
+
+  const oldImagePublicId=exist.imagePublicId;
+  const user= await User.findByIdAndUpdate(userId,{name,phone,image})
+
+  if (image && oldImagePublicId) {
+        await cloudinary.uploader.destroy(oldImagePublicId);
+    }
+    return {
+        message: `successfully updated the user:${user.name}`,
+        data: {
+            user
+        }
+    }
+
+}
+
+export const getUserByIdService=async (Id) => {
+    const user = await User.findById(Id);
+
+       return {
+        message: `successfully fetch the user:${user.name}`,
+        data: {
+            user
+        }
+    }
 }

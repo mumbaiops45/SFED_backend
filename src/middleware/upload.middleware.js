@@ -26,3 +26,7 @@ const createUpload = (folder) => {
 export const categoryUpload = createUpload("sfed/category");
 
 export const productUpload = createUpload("sfed/product");
+
+export const BannerUpload = createUpload("sfed/banner");
+
+export const UserUpload = createUpload("sfed/user");

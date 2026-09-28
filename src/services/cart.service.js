@@ -59,7 +59,7 @@ export const getCartByUserService = async (userId) => {
     }
 }
 export const getAllCartService = async () => {
-    const cart = await Cart.find().populate("items.product");;
+    const cart = await Cart.find().populate("items.product").populate("user","name email phone");;
     return {
         message: "cart items",
         data: {

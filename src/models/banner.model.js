@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 const bannerSchema = new mongoose.Schema({
     type: {
         type: String,
-        enum: ["Hero", "middle"],
+        enum: ["Hero", "MIDDLE_BANNER"],
         required: true
     },
     url: {
@@ -35,6 +35,27 @@ const bannerSchema = new mongoose.Schema({
         type: String,
         default: "#ffffff"
     },
+
+   description:{
+        type: String,
+        default: "",
+        trim: true
+    },
+    descriptionColor:{
+        type: String,
+        default: "#ffffff"
+    },
+    ctaUrl:{
+        type: String,
+        default: "",
+        trim: true
+    },
+    ctaText:{
+        type: String,
+        default: "",
+        trim: true
+    },
+
     isActive: {
         type: Boolean,
         default: true
