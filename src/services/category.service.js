@@ -11,8 +11,15 @@ export const createCategoryService =async (data) => {
 
     }
 }
-export const getCategoryService=async () => {
-    const category = await Category.find().lean()
+export const getCategoryService=async (keyword) => {
+    const filter = {};
+    if (keyword) {
+        filter.name={
+            $regex:keyword,
+            $options:"i"
+        }
+    }
+    const category = await Category.find(filter).lean()
     return{
         message:"All category",
         data:{

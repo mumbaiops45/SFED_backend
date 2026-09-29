@@ -13,7 +13,9 @@ export const createCategoryController=async (req,res) => {
     })
 }
 export const getCategoryController=async (req,res) => {
-    const {message,data}= await getCategoryService();
+
+    const {keyword}= req.query;
+    const {message,data}= await getCategoryService(keyword);
     res.json({
         success:true,
         message,
