@@ -62,20 +62,20 @@ export const creatOrderService = async (userId, AddressId) => {
         return sum + item.price * item.quantity
     }, 0)
 
-    const shipping= await Shipping.findOne({
-        minOrderValue:{
-            $lte:subtotal
+    const shipping = await Shipping.findOne({
+        minOrderValue: {
+            $lte: subtotal
         },
-        $or:[{
-            maxOrderValue:{
-                $gte:subtotal
+        $or: [{
+            maxOrderValue: {
+                $gte: subtotal
             }
-        },{
-            maxOrderValue:{
-           $exists:false
+        }, {
+            maxOrderValue: {
+                $exists: false
             }
         }
-    ]
+        ]
     })
 
 
@@ -171,6 +171,16 @@ export const updateOrderByCustomerService = async (orderId, status = "CANCELLED"
 }
 
 export const updateOrderByAdminService = async (orderId, status) => {
+ const existingOrder = await Order.findById(orderId);
+
+    if (!existingOrder) {
+        throw new Error("order not found");
+    }
+
+    if (existingOrder.status === "DELIVERED") {
+        throw new Error("The delivered order status cannot be changed.");
+    }
+
     const order = await Order.findByIdAndUpdate(orderId,
         {
             status: status
@@ -180,10 +190,7 @@ export const updateOrderByAdminService = async (orderId, status) => {
             runValidators: true
         }
     )
-    if (!order) {
-        throw new Error("order not found");
 
-    }
 
     return {
         message: `order is updated`,
