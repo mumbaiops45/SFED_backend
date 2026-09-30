@@ -14,7 +14,7 @@ router.put("/:id",protect,authorize("admin"),asyncHandler(updateUserController))
 
 // user
 
-router.put("/",protect,authorize("user"),UserUpload.single("image"),asyncHandler(updateUserByUserController));
-router.get("/profile",protect,authorize("user"),UserUpload.single("image"),asyncHandler(getUserByIdController));
+router.put("/",protect,authorize("user","admin"),UserUpload.single("image"),asyncHandler(updateUserByUserController));
+router.get("/profile",protect,authorize("user","admin"),UserUpload.single("image"),asyncHandler(getUserByIdController));
 export default router;
 
