@@ -13,6 +13,15 @@ const bannerSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    mobileUrl: {
+        type: String,
+        required: true
+    },
+
+    mobileUrlPublicId: {
+        type: String,
+        required: true
+    },
     order: {
         type: Number,
         required: true
@@ -36,21 +45,21 @@ const bannerSchema = new mongoose.Schema({
         default: "#ffffff"
     },
 
-   description:{
+    description: {
         type: String,
         default: "",
         trim: true
     },
-    descriptionColor:{
+    descriptionColor: {
         type: String,
         default: "#ffffff"
     },
-    ctaUrl:{
+    ctaUrl: {
         type: String,
         default: "",
         trim: true
     },
-    ctaText:{
+    ctaText: {
         type: String,
         default: "",
         trim: true

@@ -15,10 +15,7 @@ const shippingFeeSchema = new mongoose.Schema({
         min: 0,
         validate: {
             validator: function (value) {
-                    console.log("VALIDATOR:", {
-        maxOrderValue: value,
-        minOrderValue: this.minOrderValue
-    });
+                 
                 return value === undefined || value >= this.minOrderValue;
             },
             message: "Maximum order value must be greater than or equal to minimum order value"

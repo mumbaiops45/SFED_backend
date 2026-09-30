@@ -116,8 +116,9 @@ export const deleteBannerByIdService = async (Id) => {
         throw new Error("banner not found");
     };
 
- 
+
     const oldUrlPublicId = exist.urlPublicId;
+    const oldMobilePublicId = exist.mobileUrlPublicId;
     const banner = await Banner.findByIdAndDelete(Id);
 
     await Banner.updateMany({
@@ -135,8 +136,13 @@ export const deleteBannerByIdService = async (Id) => {
 
 
 
-    await cloudinary.uploader.destroy(oldUrlPublicId);
+    if (oldUrlPublicId) {
+        await cloudinary.uploader.destroy(oldUrlPublicId);
+    }
 
+    if (oldMobilePublicId) {
+        await cloudinary.uploader.destroy(oldMobilePublicId);
+    }
     return {
         message: "Banner delete successfully",
         data: {
